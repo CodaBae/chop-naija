@@ -9,11 +9,11 @@ const User = require('../models/User');
 router.get('/', (req, res) => {
   Product.find({}, function (err, product) {
     let url = req.protocol + '://' + req.get('host') + req.originalUrl
-    let id = url.replace("http://chopnaija.com/?id=", '')
+    let id = url.replace("http://www.chopnaija.com/?id=", '')
 
     console.log()
 
-    if (id === 'http://chopnaija.com/'){
+    if (id === 'http://www.chopnaija.com/'){
     
     req.flash(
       'success_msg',
