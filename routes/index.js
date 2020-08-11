@@ -13,7 +13,7 @@ router.get('/', (req, res) => {
 
     console.log()
 
-    if (id === 'http://www.chopnaija.com/'){
+    if (id === 'http://www.chopnaija.com/'){  
     
     req.flash(
       'success_msg',
