@@ -42,10 +42,18 @@ router.post('/register', (req, res) => {
   if (password != password2) {
     errors.push({ msg: 'Passwords do not match' });
   }
-
-  if (password.length < 6) {
-    errors.push({ msg: 'Password must be at least 6 characters' });
+  if (password.length < 8) {
+    errors.push({ msg: 'Your password must be at least 8 characters' });
   }
+  if (password.search(/[a-z]/i) < 0) {
+    errors.push({ msg: 'Your password must contain at least one letter.' });
+
+  }
+  if (password.search(/[0-9]/) < 0) {
+    errors.push({ msg: 'Your password must contain at least one digit.' });
+
+  }
+
 
   if (errors.length > 0) {
     res.render('register', {
@@ -376,7 +384,7 @@ router.get('/add_cart', (req, res) => {
 
   res.redirect(`/?id=${userID}`)
 });
- 
+
 
 router.get('/shop', (req, res) => {
   Product.find({}, function (err, product) {
@@ -387,9 +395,9 @@ router.get('/shop', (req, res) => {
 
 router.get('/shopping_cart', (req, res) => {
   User.findOne({ id: userID }).then(user => {
-    console.log('shhhop',user)
+    console.log('shhhop', user)
     res.render('shopping-cart', {
-      cart: user.cart 
+      cart: user.cart
     });
 
 
