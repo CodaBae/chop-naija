@@ -84,6 +84,11 @@
         padding: 6px 15px;
       }
     }
+    header .user-basket .cart-img a {
+    display: inline-block;
+    width: 40%;
+    padding: 0px;
+}
   </style>
 </head>
 
@@ -103,9 +108,9 @@
         <div class="container">
 
           <!-- Logo -->
-          <div class="logo"> <a href="/"><img class="img-responsive" src="../assets/images/logo-1.png"
+          <div class="logo"> <img class="img-responsive" src="../assets/images/logo-1.png"
                 style="width: 31%;    margin: -11% 0 -17%;
-" alt=""></a> </div>
+" alt=""> </div>
           <nav class="navbar ownmenu">
             <div class="navbar-header">
               <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#nav-open-btn"
@@ -120,7 +125,7 @@
 
 
                 <li> <a href="#about-section">About </a> </li>
-                <li> <a href="users/shop">Shop </a> </li>
+                <li> <a href="/shop">Shop </a> </li>
                 <li> <a href="#contact-section">Contact Us </a> </li>
 
               </ul>
@@ -135,9 +140,19 @@
                     role="button"><i class="icon-user"></i> </a>
                   <ul class="dropdown-menu">
                     <li>
-                      <h6>HELLO! User</h6>
+                      <h6>Hello
+
+                       <% if (user) { %>
+                          <%=user.first_name + ' '+ 'Welcome!'%>
+                       <%}else { %>
+
+                       <%='User' + ' '+ 'Welcome!'%>
+
+                       <%} %>
+
+                      
+                      </h6>
                     </li>
-                    <li><a href="users/shopping_cart">MY CART</a></li>
                     <li><a href="users/login">LOGIN</a></li>
                     <li><a href="users/login_vendor">Login As VENDOR</a></li>
                     <li><a href="users/register">REGISTER</a></li>
@@ -150,9 +165,10 @@
                 <li class="dropdown user-basket"> <a href="#" class="dropdown-toggle" data-toggle="dropdown"
                     role="button" aria-haspopup="true" aria-expanded="true"><i class="icon-basket-loaded"></i> </a>
                   <ul class="dropdown-menu">
-                    <% if (user) { %>
+                  <% if (user) { %>
 
-                   <% user.map((c) =>{ %>
+                   <% if(user.cart){%>
+                   <% user.cart.map((c) =>{ %>
                     <li>
                       <div class="media-left">
                         <div class="cart-img"> <a href="#"> <img class="media-object img-responsive"
@@ -164,17 +180,38 @@
                         <span class="price"><%=c.price%> USD</span> <span class="qty">QTY: <%=c.quantity%></span>
                       </div>
                     </li>
-
-                    <% }) %>
-
-               <% } %>
                     
+                    <% }) %>
+                   <% }else{ %>
+                           <p style='text-align:center'> your cart is empty, try shopping</p> 
+                   <% } %>
+
+                   <% }else{ %>
+
+                   <p style='text-align:center'> Login to access your CART</p>
+                    
+                   <%} %>
                     <li>
-                      <h5 class="text-center">SUBTOTAL: 18.00 USD</h5>
+                      <h5 class="text-center">SUBTOTAL: 
+                      <%if(user){ %>
+                         <% if(user.cart){ %>
+                            <% var ATotal = user.cart.reduce(function(prev, cur) { %>
+                          <% return prev + cur.price; %>
+                        <% }, 0); %>
+                          <%=ATotal%>
+                         <% } %>
+                      <%}else{%>
+                          <%=0 %>
+                      <%}%>
+                       USD</h5>
+                     
                     </li>
+
+                  
+
                     <li class="margin-0">
                       <div class="row">
-                        <div class="col-xs-6"> <a href="users/shopping_cart" class="btn">VIEW CART</a></div>
+                        <div class="col-xs-6"> <a href="/shopping_cart" class="btn">VIEW CART</a></div>
                         <div class="col-xs-6 "> <a href="users/checkout" class="btn">CHECK OUT</a></div>
                       </div>
                     </li>
@@ -262,7 +299,7 @@
                 data-y="center" data-voffset="200" data-speed="800" data-start="2200" data-easing="Power3.easeInOut"
                 data-elementdelay="0.1" data-endelementdelay="0.1" data-endspeed="300" data-scrolloffset="0"
                 style="z-index: 8;">
-                <a href="users/shop" class="btn">SHOP NOW</a>
+                <a href="/shop" class="btn">SHOP NOW</a>
               </div>
             </li>
 
@@ -327,7 +364,7 @@
               <div class="tp-caption lfb tp-resizeme" data-x="left" data-hoffset="0" data-y="center" data-voffset="240"
                 data-speed="800" data-start="2200" data-easing="Power3.easeInOut" data-elementdelay="0.1"
                 data-endelementdelay="0.1" data-endspeed="300" data-scrolloffset="0" style="z-index: 8;">
-                <a href="users/shop" class="btn">SHOP NOW</a>
+                <a href="/shop" class="btn">SHOP NOW</a>
               </div>
             </li>
           </ul>
@@ -367,8 +404,7 @@
                     <div class="inn">
                       <a href="<%=p.img%>" data-lighter><i
                           class="icon-magnifier"></i></a>
-                      <a href="users/add_cart?id=<%=p._id%>"><i class="icon-basket"></i></a>
-                      <a href="#."><i class="icon-heart"></i></a>
+                      <a href="/add_cart?id=<%=p._id%>"><i class="icon-basket"></i></a>
                     </div>
                   </div>
                 </div>

@@ -15,7 +15,6 @@ var userID = ''
 
 router.get('/login_vendor', forwardAuthenticated, (req, res) => res.render('loginV'));
 router.get('/be_vendor', forwardAuthenticated, (req, res) => res.render('beVendor'));
-router.get('/checkout', (req, res) => res.render('checkout'));
 router.get('/product_detail', (req, res) => res.render('product-detail'));
 
 
@@ -94,7 +93,7 @@ router.post('/register', (req, res) => {
 
         const newUser = new User({
           first_name,
-          last_name,
+          last_name, 
           phone,
           address,
           country,
@@ -128,281 +127,247 @@ router.post('/register', (req, res) => {
   }
 });
 
+
 // Login
 router.post('/login', (req, res, next) => {
-  const { email, password } = req.body;
-
-  errors = []
-  User.findOne({
-    email: email
-  }).then(user => {
-    if (!user) {
-      errors.push({ msg: 'email does not exist' });
-      res.render('login', {
-        errors,
-        email,
-        password,
-      });
-
-
-    }
-    userID = user.id
-    res.redirect(`/?id=${user.id}`)
-  })
-})
-
-  ;
-
-// login_vendor
-router.post('/login_vendor', (req, res, next) => {
   passport.authenticate('local', {
-    successRedirect: '/users/vendor',
-    failureRedirect: '/users/login_vendor',
+    successRedirect: '/shop',
+    failureRedirect: '/users/login',
     failureFlash: true
   })(req, res, next);
 });
 
-// Logout
-router.get('/logout', (req, res) => {
-  req.logout();
-  req.flash('success_msg', 'You are logged out');
-  res.redirect('/users/login');
-});
+// // Logout
+// router.get('/logout', (req, res) => {
+//   req.logout();
+//   req.flash('success_msg', 'You are logged out');
+//   res.redirect('/users/login');
+// });
 
 
-// Vendor
-router.post('/be_vendor', (req, res) => {
-  const { first_name, last_name, email, phone, address, country, state, password, password2, brand_name } = req.body;
-  let errors = [];
+// // Login
+// router.post('/login', (req, res, next) => {
+//   const { email, password } = req.body;
 
-  if (!first_name || !last_name || !email || !phone || !address || !brand_name || !country || !state || !password || !password2) {
-    errors.push({ msg: 'Please enter all fields' });
-  }
-
-  if (password != password2) {
-    errors.push({ msg: 'Passwords do not match' });
-  }
-
-  if (password.length < 6) {
-    errors.push({ msg: 'Password must be at least 6 characters' });
-  }
-
-  if (errors.length > 0) {
-    res.render('beVendor', {
-      errors,
-      first_name,
-      last_name,
-      brand_name,
-      phone,
-      address,
-      country,
-      state,
-      email,
-      password,
-      password2
-    });
-  } else {
-    Vendor.findOne({ email: email }).then(user => {
-      if (user) {
-        errors.push({ msg: 'Email already exists' });
-        res.render('beVendor', {
-          errors,
-          first_name,
-          last_name,
-          brand_name,
-          phone,
-          address,
-          country,
-          state,
-          email,
-          password,
-          password2
-        });
-      } else {
-
-        const products = []
-        const productNum = 0
-        const orderNum = 0
+//   errors = []
+//   User.findOne({
+//     email: email
+//   }).then(user => {
+//     if (!user) {
+//       errors.push({ msg: 'email does not exist' });
+//       res.render('login', {
+//         errors,
+//         email,
+//         password,
+//       });
 
 
-        const newUser = new Vendor({
-          first_name,
-          last_name,
-          brand_name,
-          phone,
-          address,
-          country,
-          state,
-          email,
-          password,
-          password2,
-          products,
-          productNum,
-          orderNum
+//     }
+//     userID = user.id
+//     res.redirect(`/?id=${user.id}`)
+//   })
+// })
+
+// // login_vendor
+// router.post('/login_vendor', (req, res, next) => {
+//   passport.authenticate('local', {
+//     successRedirect: '/users/vendor',
+//     failureRedirect: '/users/login_vendor',
+//     failureFlash: true
+//   })(req, res, next);
+// });
+
+// // Logout
+// router.get('/logout', (req, res) => {
+//   req.logout();
+//   req.flash('success_msg', 'You are logged out');
+//   res.redirect('/users/login');
+// });
 
 
-        });
+// // Vendor
+// router.post('/be_vendor', (req, res) => {
+//   const { first_name, last_name, email, phone, address, country, state, password, password2, brand_name } = req.body;
+//   let errors = [];
 
-        bcrypt.genSalt(10, (err, salt) => {
-          bcrypt.hash(newUser.password, salt, (err, hash) => {
-            if (err) throw err;
-            newUser.password = hash;
-            newUser
-              .save()
-              .then(user => {
-                req.flash(
-                  'success_msg',
-                  'You are now registered and can log in'
-                );
-                res.redirect('/users/login_vendor');
-              })
-              .catch(err => console.log(err));
-          });
-        });
-      }
-    });
-  }
-});
+//   if (!first_name || !last_name || !email || !phone || !address || !brand_name || !country || !state || !password || !password2) {
+//     errors.push({ msg: 'Please enter all fields' });
+//   }
 
+//   if (password != password2) {
+//     errors.push({ msg: 'Passwords do not match' });
+//   }
 
+//   if (password.length < 6) {
+//     errors.push({ msg: 'Password must be at least 6 characters' });
+//   }
 
-//  add Products
-router.post('/add_product', (req, res) => {
-  const { name, price, quantity, discount, delivery, brand_name, img } = req.body;
-  let errors = [];
+//   if (errors.length > 0) {
+//     res.render('beVendor', {
+//       errors,
+//       first_name,
+//       last_name,
+//       brand_name,
+//       phone,
+//       address,
+//       country,
+//       state,
+//       email,
+//       password,
+//       password2
+//     });
+//   } else {
+//     Vendor.findOne({ email: email }).then(user => {
+//       if (user) {
+//         errors.push({ msg: 'Email already exists' });
+//         res.render('beVendor', {
+//           errors,
+//           first_name,
+//           last_name,
+//           brand_name,
+//           phone,
+//           address,
+//           country,
+//           state,
+//           email,
+//           password,
+//           password2
+//         });
+//       } else {
 
-  if (!name || !price || !quantity || !discount || !delivery || !brand_name || !img) {
-    errors.push({ msg: 'Please enter all fields' });
-  }
-  let userId = req.query.id
-
-  Vendor.findOne({ _id: userId }).then(user => {
-
-    if (errors.length > 0) {
-      res.render('addProducts', {
-        errors,
-        user,
-        name,
-        price,
-        quantity,
-        brand_name,
-        delivery,
-        discount,
-        img
-
-      });
-    } else {
-
-
-      let productN = [{
-        name,
-        price,
-        quantity,
-        brand_name,
-        delivery,
-        discount,
-        img
-      }]
+//         const products = []
+//         const productNum = 0
+//         const orderNum = 0
 
 
-      Vendor.updateOne({ _id: userId }, { productNum: user.productNum + 1 },
-        function (err, product) {
-          console.log(product)
-          if (err) {
-            res.json({
-              error: err
-            })
-          }
-        })
-
-      Vendor.updateOne({ _id: userId }, { $push: { products: productN } },
-        function (err, product) {
-          console.log(product)
-          if (err) {
-            res.json({
-              error: err
-            })
-          }
-        })
-
-      const newUser = new Product({
-        name,
-        price,
-        quantity,
-        brand_name,
-        delivery,
-        discount,
-        img
-      });
+//         const newUser = new Vendor({
+//           first_name,
+//           last_name,
+//           brand_name,
+//           phone,
+//           address,
+//           country,
+//           state,
+//           email,
+//           password,
+//           password2,
+//           products,
+//           productNum,
+//           orderNum
 
 
-      newUser
-        .save()
-        .then(user => {
-          req.flash(
-            'success_msg',
-            'You are now registered and can log in'
-          );
-          res.redirect('/users/login_vendor');
-        })
-        .catch(err => console.log(err));
+//         });
 
-    }
-
-  })
-});
-
-
-router.get('/add_cart', (req, res) => {
-  pId = req.query.id
-  console.log('pId', pId)
-
-
-  Product.findOne({ _id: pId }).then(p => {
-    console.log(p)
-    let cartItem = [{
-      name: p.name,
-      img: p.img,
-      delivery: p.delivery,
-      price: p.price,
-      discount: p.discount,
-      quantity: p.quantity,
-      brand_name: p.brand_name
-    }]
-
-    User.updateOne({ _id: userID }, { $push: { cart: cartItem } },
-      function (err, product) {
-        console.log(product)
-        if (err) {
-          res.json({
-            error: err
-          })
-        }
-      })
-  })
-  console.log('sss', userID)
-
-  res.redirect(`/?id=${userID}`)
-});
+//         bcrypt.genSalt(10, (err, salt) => {
+//           bcrypt.hash(newUser.password, salt, (err, hash) => {
+//             if (err) throw err;
+//             newUser.password = hash;
+//             newUser
+//               .save()
+//               .then(user => {
+//                 req.flash(
+//                   'success_msg',
+//                   'You are now registered and can log in'
+//                 );
+//                 res.redirect('/users/login_vendor');
+//               })
+//               .catch(err => console.log(err));
+//           });
+//         });
+//       }
+//     });
+//   }
+// });
 
 
-router.get('/shop', (req, res) => {
-  Product.find({}, function (err, product) {
-    res.render('shop', { product: product });
-  });
-});
+
+// //  add Products
+// router.post('/add_product', (req, res) => {
+//   const { name, price, quantity, discount, delivery, brand_name, img } = req.body;
+//   let errors = [];
+
+//   if (!name || !price || !quantity || !discount || !delivery || !brand_name || !img) {
+//     errors.push({ msg: 'Please enter all fields' });
+//   }
+//   let userId = req.query.id
+
+//   Vendor.findOne({ _id: userId }).then(user => {
+
+//     if (errors.length > 0) {
+//       res.render('addProducts', {
+//         errors,
+//         user,
+//         name,
+//         price,
+//         quantity,
+//         brand_name,
+//         delivery,
+//         discount,
+//         img
+
+//       });
+//     } else {
 
 
-router.get('/shopping_cart', (req, res) => {
-  User.findOne({ id: userID }).then(user => {
-    console.log('shhhop', user)
-    res.render('shopping-cart', {
-      cart: user.cart
-    });
+//       let productN = [{
+//         name,
+//         price,
+//         quantity,
+//         brand_name,
+//         delivery,
+//         discount,
+//         img
+//       }]
 
 
-  })
+//       Vendor.updateOne({ _id: userId }, { productNum: user.productNum + 1 },
+//         function (err, product) {
+//           console.log(product)
+//           if (err) {
+//             res.json({
+//               error: err
+//             })
+//           }
+//         })
 
-});
+//       Vendor.updateOne({ _id: userId }, { $push: { products: productN } },
+//         function (err, product) {
+//           console.log(product)
+//           if (err) {
+//             res.json({
+//               error: err
+//             })
+//           }
+//         })
+
+//       const newUser = new Product({
+//         name,
+//         price,
+//         quantity,
+//         brand_name,
+//         delivery,
+//         discount,
+//         img
+//       });
+
+
+//       newUser
+//         .save()
+//         .then(user => {
+//           req.flash(
+//             'success_msg',
+//             'You are now registered and can log in'
+//           );
+//           res.redirect('/users/login_vendor');
+//         })
+//         .catch(err => console.log(err));
+
+//     }
+
+//   })
+// });
+
+
+
 
 module.exports = router;

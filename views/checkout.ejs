@@ -77,6 +77,15 @@
         padding: 6px 15px;
       }
     }
+      header .user-basket .cart-img a {
+    display: inline-block;
+    width: 40%;
+    padding: 0px;
+}
+.show {
+    display: block!important;
+    opacity: initial;
+}
   </style>
 </head>
 
@@ -98,9 +107,9 @@
         <div class="container">
 
           <!-- Logo -->
-           <div class="logo"> <a href="/"><img class="img-responsive" src="../assets/images/logo-1.png"
+           <div class="logo"> <img class="img-responsive" src="../assets/images/logo-1.png"
                 style="width: 31%;    margin: -11% 0 -17%;
-" alt=""></a> </div>
+" alt=""> </div>
           <nav class="navbar ownmenu">
             <div class="navbar-header">
               <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#nav-open-btn"
@@ -123,13 +132,23 @@
               <ul class="navbar-right">
 
                 <!-- USER INFO -->
-                <li class="dropdown user-acc"> <a href="#" class="dropdown-toggle" data-toggle="dropdown"
+                <li class="dropdown user-acc"> <a href="../assets/#" class="dropdown-toggle" data-toggle="dropdown"
                     role="button"><i class="icon-user"></i> </a>
                   <ul class="dropdown-menu">
                     <li>
-                      <h6>HELLO! User</h6>
+                      <h6>Hello
+
+                       <% if (user) { %>
+                          <%=user.first_name + ' '+ 'Welcome!'%>
+                       <%}else { %>
+
+                       <%='User' + ' '+ 'Welcome!'%>
+
+                       <%} %>
+
+                      
+                      </h6>
                     </li>
-                    <li><a href="../users/shopping_cart">MY CART</a></li>
                     <li><a href="../users/login">LOGIN</a></li>
                     <li><a href="../users/login_vendor">Login As VENDOR</a></li>
                     <li><a href="../users/register">REGISTER</a></li>
@@ -142,35 +161,53 @@
                 <li class="dropdown user-basket"> <a href="#" class="dropdown-toggle" data-toggle="dropdown"
                     role="button" aria-haspopup="true" aria-expanded="true"><i class="icon-basket-loaded"></i> </a>
                   <ul class="dropdown-menu">
+                  <% if (user) { %>
+
+                   <% if(user.cart){%>
+                   <% user.cart.map((c) =>{ %>
                     <li>
                       <div class="media-left">
                         <div class="cart-img"> <a href="#"> <img class="media-object img-responsive"
-                              src="../assets/images/agri-commodity-1-gsr-nbr.jpg" alt="..."> </a> </div>
+                              src="<%=c.img%>" alt="..."> </a> </div>
                       </div>
                       <div class="media-body" style="position: initial;">
 
-                        <h6 class="media-heading">Vegetable</h6>
-                        <span class="price">9.00 USD</span> <span class="qty">QTY: 01</span>
+                        <h6 class="media-heading"><%=c.name%></h6>
+                        <span class="price"><%=c.price%> USD</span> <span class="qty">QTY: <%=c.quantity%></span>
                       </div>
                     </li>
-                    <li>
-                      <div class="media-left">
-                        <div class="cart-img"> <a href="#"> <img class="media-object img-responsive"
-                              src="../assets/images/hai-nguyen-LSZfNPVZjTw-unsplash.jpg" alt="..."> </a> </div>
-                      </div>
-                      <div class="media-body" style="position: initial;">
+                    
+                    <% }) %>
+                   <% }else{ %>
+                           <p style='text-align:center'> your cart is empty, try shopping</p> 
+                   <% } %>
 
-                        <h6 class="media-heading">Vegetable</h6>
-                        <span class="price">9.00 USD</span> <span class="qty">QTY: 01</span>
-                      </div>
+                   <% }else{ %>
+
+                   <p style='text-align:center'> Login to access your CART</p>
+                    
+                   <%} %>
+                   <li>
+                      <h5 class="text-center">SUBTOTAL: 
+  <%if(user){ %>
+                         <% if(user.cart){ %>
+                            <% var ATotal = user.cart.reduce(function(prev, cur) { %>
+                          <% return prev + cur.price; %>
+                        <% }, 0); %>
+                          <%=ATotal%>
+                         <% } %>
+                      <%}else{%>
+                          <%=0 %>
+                      <%}%>
+                      
+                       USD</h5>
+                     
                     </li>
-                    <li>
-                      <h5 class="text-center">SUBTOTAL: 18.00 USD</h5>
-                    </li>
+
                     <li class="margin-0">
                       <div class="row">
-                        <div class="col-xs-6"> <a href="../users/shopping_cart" class="btn">VIEW CART</a></div>
-                        <div class="col-xs-6 "> <a href="../users/checkout" class="btn">CHECK OUT</a></div>
+                        <div class="col-xs-6"> <a href="/shopping_cart" class="btn">VIEW CART</a></div>
+                        <div class="col-xs-6 "> <a href="users/checkout" class="btn">CHECK OUT</a></div>
                       </div>
                     </li>
                   </ul>
@@ -230,8 +267,10 @@
 
                 <!-- ESTIMATE SHIPPING & TAX -->
                 <div class="col-sm-7">
-                  <h6>BILLING DETAILS</h6>
-                  <form>
+                  <h6>SHIPPING INFO</h6>
+                  <form action="/shipping" method="POST">
+                                <% include ./partials/messages %>
+
                     <ul class="row">
 
                       <!-- Name -->
@@ -268,14 +307,14 @@
                       <!-- COUNTRY -->
                       <li class="col-md-6">
                         <label> COUNTRY
-                          <input type="text" name="contry-state" value="" placeholder="">
+                          <input type="text" name="contry" value="" placeholder="">
                         </label>
                       </li>
 
                       <!-- EMAIL ADDRESS -->
                       <li class="col-md-6">
-                        <label> *EMAIL ADDRESS
-                          <input type="text" name="contry-state" value="" placeholder="">
+                        <label> *STREET
+                          <input type="text" name="street" value="" placeholder="">
                         </label>
                       </li>
                       <!-- PHONE -->
@@ -291,12 +330,7 @@
                       </li>
 
                       <!-- CREATE AN ACCOUNT -->
-                      <li class="col-md-6">
-                        <div class="checkbox margin-0 margin-top-20">
-                          <input id="checkbox1" class="styled" type="checkbox">
-                          <label for="checkbox1"> Ship to a different address </label>
-                        </div>
-                      </li>
+                     
                     </ul>
                   </form>
 

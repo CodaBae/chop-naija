@@ -8,7 +8,15 @@
 -------------------------------------------------------------------*/
 /* Base */
 
-
+.loginV{
+	margin: 4%;
+    text-align: center;
+    width: 40%;
+    font-size: 2rem;
+    font-weight: 700;
+    margin-top: 5%;
+    color: red;
+}
   h1 {
 	font-weight: normal;
   }

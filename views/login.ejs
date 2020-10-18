@@ -81,6 +81,10 @@
     .fade {
     opacity: 5;
     }
+    .show {
+    display: block!important;
+    opacity: initial;
+}
   </style>
 </head>
 
@@ -232,6 +236,7 @@
             <!-- SHOPPING INFORMATION -->
             <div class="cart-ship-info">
               <div class="row">
+              <% include ./partials/messages %>
 
                 <!-- ESTIMATE SHIPPING & TAX -->
                 <div class="col-sm-7">

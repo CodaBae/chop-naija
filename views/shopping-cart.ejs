@@ -141,6 +141,25 @@
     -o-transition: all .25s;
     transition: all .25s;
 }
+
+  header .user-basket .cart-img a {
+    display: inline-block;
+    width: 40%;
+    padding: 0px;
+}
+
+.cart-sections {
+    width: 200%;
+    height: 55%;
+    display: flex;
+    position: absolute;
+    left: 0;
+    -webkit-transition: all .25s;
+    -moz-transition: all .25s;
+    -ms-transition: all .25s;
+    -o-transition: all .25s;
+    transition: all .25s;
+}
   </style>
 </head>
 
@@ -187,13 +206,23 @@
               <ul class="navbar-right">
 
                 <!-- USER INFO -->
-                <li class="dropdown user-acc"> <a href="#" class="dropdown-toggle" data-toggle="dropdown"
+                <li class="dropdown user-acc"> <a href="../assets/#" class="dropdown-toggle" data-toggle="dropdown"
                     role="button"><i class="icon-user"></i> </a>
                   <ul class="dropdown-menu">
-                   <li>
-                      <h6>HELLO! User</h6>
+                    <li>
+                      <h6>Hello
+
+                       <% if (user) { %>
+                          <%=user.first_name + ' '+ 'Welcome!'%>
+                       <%}else { %>
+
+                       <%='User' + ' '+ 'Welcome!'%>
+
+                       <%} %>
+
+                      
+                      </h6>
                     </li>
-                    <li><a href="../users/shopping_cart">MY CART</a></li>
                     <li><a href="../users/login">LOGIN</a></li>
                     <li><a href="../users/login_vendor">Login As VENDOR</a></li>
                     <li><a href="../users/register">REGISTER</a></li>
@@ -206,35 +235,52 @@
                 <li class="dropdown user-basket"> <a href="#" class="dropdown-toggle" data-toggle="dropdown"
                     role="button" aria-haspopup="true" aria-expanded="true"><i class="icon-basket-loaded"></i> </a>
                   <ul class="dropdown-menu">
+                  <% if (user) { %>
+
+                   <% if(user.cart){%>
+                   <% user.cart.map((c) =>{ %>
                     <li>
                       <div class="media-left">
                         <div class="cart-img"> <a href="#"> <img class="media-object img-responsive"
-                              src="../assets/images/agri-commodity-1-gsr-nbr.jpg" alt="..."> </a> </div>
+                              src="<%=c.img%>" alt="..."> </a> </div>
                       </div>
                       <div class="media-body" style="position: initial;">
 
-                        <h6 class="media-heading">Vegetable</h6>
-                        <span class="price">9.00 USD</span> <span class="qty">QTY: 01</span>
+                        <h6 class="media-heading"><%=c.name%></h6>
+                        <span class="price"><%=c.price%> USD</span> <span class="qty">QTY: <%=c.quantity%></span>
                       </div>
                     </li>
-                    <li>
-                      <div class="media-left">
-                        <div class="cart-img"> <a href="#"> <img class="media-object img-responsive"
-                              src="../assets/images/hai-nguyen-LSZfNPVZjTw-unsplash.jpg" alt="..."> </a> </div>
-                      </div>
-                      <div class="media-body" style="position: initial;">
+                    
+                    <% }) %>
+                   <% }else{ %>
+                           <p style='text-align:center'> your cart is empty, try shopping</p> 
+                   <% } %>
 
-                        <h6 class="media-heading">Vegetable</h6>
-                        <span class="price">9.00 USD</span> <span class="qty">QTY: 01</span>
-                      </div>
+                   <% }else{ %>
+
+                   <p style='text-align:center'> Login to access your CART</p>
+                    
+                   <%} %>
+                   <li>
+                      <h5 class="text-center">SUBTOTAL: 
+                       <%if(user){ %>
+                         <% if(user.cart){ %>
+                            <% var ATotal = user.cart.reduce(function(prev, cur) { %>
+                          <% return prev + cur.price; %>
+                        <% }, 0); %>
+                          <%=ATotal%>
+                         <% } %>
+                      <%}else{%>
+                          <%=0 %>
+                      <%}%>
+                      USD</h5>
+                     
                     </li>
-                    <li>
-                      <h5 class="text-center">SUBTOTAL: 18.00 USD</h5>
-                    </li>
+
                     <li class="margin-0">
                       <div class="row">
-                        <div class="col-xs-6"> <a href="../users/shopping_cart" class="btn">VIEW CART</a></div>
-                        <div class="col-xs-6 "> <a href="../users/checkout" class="btn">CHECK OUT</a></div>
+                        <div class="col-xs-6"> <a href="/shopping_cart" class="btn">VIEW CART</a></div>
+                        <div class="col-xs-6 "> <a href="users/checkout" class="btn">CHECK OUT</a></div>
                       </div>
                     </li>
                   </ul>
@@ -290,7 +336,7 @@
 							<li class="cart-tab-cell selected">
 								<span class="cart-tab">
 									<span class="tab-ic tab-cart-ic"></span>
-									<span class="tab-label">$1 200 364.89</span>
+									<span class="tab-label">CART </span>
 								</span>
 							</li>
 						
@@ -303,8 +349,9 @@
 						<section class="cart-section nano">
 							<ul class="cart-list overthrow nano-content">
 								 <% if (user) { %>
+								  <% if (user.cart) { %>
 
-                   <% user.map((c) =>{ %>
+                   <% user.cart.map((c) =>{ %>
 								<li class="cart-list-item">
 									<div class="cart-item-img" style="background-image: url('<%=c.img%>');"></div>
 									<div class="cart-item">
@@ -314,9 +361,7 @@
 												<p class="cart-item-price">$<%=c.price%></p>
 											</span>
 										</div>
-										<div class="cart-item-favorites">
-											<span class="item-heart-ic"></span>
-										</div>
+										
 										<div class="cart-item-trash">
 											<span class="item-trash-ic"></span>
 										</div>
@@ -325,8 +370,13 @@
 
                   <% }) %>
 
-               <% } %>
-								
+              <% }else{ %>
+                 <p class='loginV'>your cart is EMPTY, try shopping<p>
+             <%  } %>	
+
+                <% }else{ %>
+                 <p class='loginV'>login to view your cart<p>
+              <% } %>	
                 
 								<li class="cart-list-footer"></li>
 							</ul>
@@ -361,14 +411,39 @@
                 <h6>grand total</h6>
                 <div class="grand-total">
                   <div class="order-detail">
-                    <p>WOOD CHAIR <span>$598 </span></p>
-                    <p>STOOL <span>$199 </span></p>
-                    <p>WOOD SPOON <span> $139</span></p>
+                   <% if (user) { %>
+								  <% if (user.cart) { %>
+
+                   <% user.cart.map((c) =>{ %>
+                    <p><%=c.name%> <span>$<%=c.price%> </span></p>
+                   
+              <% }) %>
+
+              <% }else{ %>
+                 <p class='loginV'>your cart is EMPTY, try shopping<p>
+             <%  } %>	
+
+                <% }else{ %>
+                 <p class='loginV'>login to view your cart<p>
+              <% } %>	
+
 
                     <!-- SUB TOTAL -->
-                    <p class="all-total">TOTAL COST <span> $998</span></p>
-                    <div class="coupn-btn"> <a href="../assets/shop_01.html" class="btn">continue shopping</a> <a
-                        href="../assets/checkout.html" class="btn">checkout</a> </div>
+                    <p class="all-total">TOTAL COST <span> $
+                    <%if(user){ %>
+                         <% if(user.cart){ %>
+                            <% var ATotal = user.cart.reduce(function(prev, cur) { %>
+                          <% return prev + cur.price; %>
+                        <% }, 0); %>
+                          <%=ATotal%>
+                         <% } %>
+                      <%}else{%>
+                          <%=0 %>
+                      <%}%>
+                    
+                    </span></p>
+                    <div class="coupn-btn"> <a href="../shop" class="btn">continue shopping</a> <a
+                        href="../users/checkout" class="btn">checkout</a> </div>
 
                   </div>
                 </div>
