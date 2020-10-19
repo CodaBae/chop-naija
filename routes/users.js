@@ -14,10 +14,9 @@ var userID = ''
 
 
 router.get('/login_vendor', forwardAuthenticated, (req, res) => res.render('loginV'));
+
 router.get('/be_vendor', forwardAuthenticated, (req, res) => res.render('beVendor'));
 router.get('/product_detail', (req, res) => res.render('product-detail'));
-
-
 
 
 
@@ -168,204 +167,204 @@ router.post('/login', (req, res, next) => {
 //   })
 // })
 
-// // login_vendor
-// router.post('/login_vendor', (req, res, next) => {
-//   passport.authenticate('local', {
-//     successRedirect: '/users/vendor',
-//     failureRedirect: '/users/login_vendor',
-//     failureFlash: true
-//   })(req, res, next);
-// });
+// login_vendor
+router.post('/login_vendor', (req, res, next) => {
+  passport.authenticate('local', {
+    successRedirect: '/vendor',
+    failureRedirect:'http://chopnaijavendor.herokuapp.com/',
+    failureFlash: true
+  })(req, res, next);
+});
 
 // // Logout
 // router.get('/logout', (req, res) => {
 //   req.logout();
 //   req.flash('success_msg', 'You are logged out');
-//   res.redirect('/users/login');
+//   res.redirect('/users/log in');
 // });
 
 
-// // Vendor
-// router.post('/be_vendor', (req, res) => {
-//   const { first_name, last_name, email, phone, address, country, state, password, password2, brand_name } = req.body;
-//   let errors = [];
+// Vendor
+router.post('/be_vendor', (req, res) => {
+  const { first_name, last_name, email, phone, address, country, state, password, password2, brand_name } = req.body;
+  let errors = [];
 
-//   if (!first_name || !last_name || !email || !phone || !address || !brand_name || !country || !state || !password || !password2) {
-//     errors.push({ msg: 'Please enter all fields' });
-//   }
+  if (!first_name || !last_name || !email || !phone || !address || !brand_name || !country || !state || !password || !password2) {
+    errors.push({ msg: 'Please enter all fields' });
+  }
 
-//   if (password != password2) {
-//     errors.push({ msg: 'Passwords do not match' });
-//   }
+  if (password != password2) {
+    errors.push({ msg: 'Passwords do not match' });
+  }
 
-//   if (password.length < 6) {
-//     errors.push({ msg: 'Password must be at least 6 characters' });
-//   }
+  if (password.length < 6) {
+    errors.push({ msg: 'Password must be at least 6 characters' });
+  }
 
-//   if (errors.length > 0) {
-//     res.render('beVendor', {
-//       errors,
-//       first_name,
-//       last_name,
-//       brand_name,
-//       phone,
-//       address,
-//       country,
-//       state,
-//       email,
-//       password,
-//       password2
-//     });
-//   } else {
-//     Vendor.findOne({ email: email }).then(user => {
-//       if (user) {
-//         errors.push({ msg: 'Email already exists' });
-//         res.render('beVendor', {
-//           errors,
-//           first_name,
-//           last_name,
-//           brand_name,
-//           phone,
-//           address,
-//           country,
-//           state,
-//           email,
-//           password,
-//           password2
-//         });
-//       } else {
+  if (errors.length > 0) {
+    res.render('beVendor', {
+      errors,
+      first_name,
+      last_name,
+      brand_name,
+      phone,
+      address,
+      country,
+      state,
+      email,
+      password,
+      password2
+    });
+  } else {
+    Vendor.findOne({ email: email }).then(user => {
+      if (user) {
+        errors.push({ msg: 'Email already exists' });
+        res.render('beVendor', {
+          errors,
+          first_name,
+          last_name,
+          brand_name,
+          phone,
+          address,
+          country,
+          state,
+          email,
+          password,
+          password2
+        });
+      } else {
 
-//         const products = []
-//         const productNum = 0
-//         const orderNum = 0
-
-
-//         const newUser = new Vendor({
-//           first_name,
-//           last_name,
-//           brand_name,
-//           phone,
-//           address,
-//           country,
-//           state,
-//           email,
-//           password,
-//           password2,
-//           products,
-//           productNum,
-//           orderNum
+        const products = []
+        const productNum = 0
+        const orderNum = 0
 
 
-//         });
-
-//         bcrypt.genSalt(10, (err, salt) => {
-//           bcrypt.hash(newUser.password, salt, (err, hash) => {
-//             if (err) throw err;
-//             newUser.password = hash;
-//             newUser
-//               .save()
-//               .then(user => {
-//                 req.flash(
-//                   'success_msg',
-//                   'You are now registered and can log in'
-//                 );
-//                 res.redirect('/users/login_vendor');
-//               })
-//               .catch(err => console.log(err));
-//           });
-//         });
-//       }
-//     });
-//   }
-// });
+        const newUser = new Vendor({
+          first_name,
+          last_name,
+          brand_name,
+          phone,
+          address,
+          country,
+          state,
+          email,
+          password,
+          password2,
+          products,
+          productNum,
+          orderNum
 
 
+        });
 
-// //  add Products
-// router.post('/add_product', (req, res) => {
-//   const { name, price, quantity, discount, delivery, brand_name, img } = req.body;
-//   let errors = [];
-
-//   if (!name || !price || !quantity || !discount || !delivery || !brand_name || !img) {
-//     errors.push({ msg: 'Please enter all fields' });
-//   }
-//   let userId = req.query.id
-
-//   Vendor.findOne({ _id: userId }).then(user => {
-
-//     if (errors.length > 0) {
-//       res.render('addProducts', {
-//         errors,
-//         user,
-//         name,
-//         price,
-//         quantity,
-//         brand_name,
-//         delivery,
-//         discount,
-//         img
-
-//       });
-//     } else {
+        bcrypt.genSalt(10, (err, salt) => {
+          bcrypt.hash(newUser.password, salt, (err, hash) => {
+            if (err) throw err;
+            newUser.password = hash;
+            newUser
+              .save()
+              .then(user => {
+                req.flash(
+                  'success_msg',
+                  'You are now registered and can log in'
+                );
+                res.redirect('http://chopnaijavendor.herokuapp.com/');
+              })
+              .catch(err => console.log(err));
+          });
+        });
+      }
+    });
+  }
+});
 
 
-//       let productN = [{
-//         name,
-//         price,
-//         quantity,
-//         brand_name,
-//         delivery,
-//         discount,
-//         img
-//       }]
+
+//  add Products
+router.post('/add_product', (req, res) => {
+  const { name, price, quantity, discount, delivery, brand_name, img } = req.body;
+  let errors = [];
+
+  if (!name || !price || !quantity || !discount || !delivery || !brand_name || !img) {
+    errors.push({ msg: 'Please enter all fields' });
+  }
+  let userId = req.query.id
+
+  Vendor.findOne({ _id: userId }).then(user => {
+
+    if (errors.length > 0) {
+      res.render('addProducts', {
+        errors,
+        user,
+        name,
+        price,
+        quantity,
+        brand_name,
+        delivery,
+        discount,
+        img
+
+      });
+    } else {
 
 
-//       Vendor.updateOne({ _id: userId }, { productNum: user.productNum + 1 },
-//         function (err, product) {
-//           console.log(product)
-//           if (err) {
-//             res.json({
-//               error: err
-//             })
-//           }
-//         })
-
-//       Vendor.updateOne({ _id: userId }, { $push: { products: productN } },
-//         function (err, product) {
-//           console.log(product)
-//           if (err) {
-//             res.json({
-//               error: err
-//             })
-//           }
-//         })
-
-//       const newUser = new Product({
-//         name,
-//         price,
-//         quantity,
-//         brand_name,
-//         delivery,
-//         discount,
-//         img
-//       });
+      let productN = [{
+        name,
+        price,
+        quantity,
+        brand_name,
+        delivery,
+        discount,
+        img
+      }]
 
 
-//       newUser
-//         .save()
-//         .then(user => {
-//           req.flash(
-//             'success_msg',
-//             'You are now registered and can log in'
-//           );
-//           res.redirect('/users/login_vendor');
-//         })
-//         .catch(err => console.log(err));
+      Vendor.updateOne({ _id: userId }, { productNum: user.productNum + 1 },
+        function (err, product) {
+          console.log(product)
+          if (err) {
+            res.json({
+              error: err
+            })
+          }
+        })
 
-//     }
+      Vendor.updateOne({ _id: userId }, { $push: { products: productN } },
+        function (err, product) {
+          console.log(product)
+          if (err) {
+            res.json({
+              error: err
+            })
+          }
+        })
 
-//   })
-// });
+      const newUser = new Product({
+        name,
+        price,
+        quantity,
+        brand_name,
+        delivery,
+        discount,
+        img
+      });
+
+
+      newUser
+        .save()
+        .then(user => {
+          req.flash(
+            'success_msg',
+            'You are now registered and can log in'
+          );
+          res.redirect('http://chopnaijavendor.herokuapp.com/');
+        })
+        .catch(err => console.log(err));
+
+    }
+
+  })
+});
 
 
 

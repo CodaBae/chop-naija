@@ -2,7 +2,6 @@
   "name": "chop_naija",
   "version": "1.0.0",
   "description": "",
-
   "main": "app.js",
   "dependencies": {
     "bcryptjs": "^2.4.3",

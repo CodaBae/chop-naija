@@ -15,6 +15,13 @@ router.get('/', (req, res) => {
 
 })
 
+
+router.get('/vendor', (req, res) => {
+  console.log(req.user)
+  res.render('vendor', {  user: req.user });
+})
+
+
 router.get('/users/checkout', (req, res) => {
  if(req.user){
   res.render('checkout', {  user: req.user });
